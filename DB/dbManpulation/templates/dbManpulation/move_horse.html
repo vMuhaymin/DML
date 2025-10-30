@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Move Horse</title>
+    <style>
+        body { font-family:sans-serif; padding:2rem; max-width:600px; }
+        label { display:block; font-weight:600; margin-top:1rem; }
+        input { width:100%; padding:0.5rem; margin-top:0.4rem; }
+        button { margin-top:1rem; padding:0.6rem 1rem; cursor:pointer; }
+        .msg { margin-top:1rem; padding:.75rem; border:1px solid #999; background:#f6f6f6; }
+        .error { background:#ffe8e8; border-color:#c88; }
+    </style>
+</head>
+<body>
+    <h1>Move Horse to a Different Stable</h1>
+
+    {% if message %}
+    <div class="msg{% if error %} error{% endif %}">
+        {{ message }}
+    </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <label>Horse ID</label>
+        <input type="text" name="horseId" required>
+
+        <label>New Stable ID</label>
+        <input type="text" name="newStableId" required>
+
+        <button type="submit">Move Horse</button>
+    </form>
+
+    <p style="margin-top:2rem;"><a href="/">Back to Home</a></p>
+</body>
+</html>

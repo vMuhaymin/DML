@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trainer Winnings</title>
+    <style>
+        body { font-family:sans-serif; padding:2rem; max-width:900px; }
+        table { border-collapse:collapse; width:100%; max-width:600px; }
+        th, td { border:1px solid #ccc; padding:0.5rem 0.75rem; text-align:left; }
+        th { background:#f3f3f3; }
+    </style>
+</head>
+<body>
+    <h1>Trainer Total Winnings</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Trainer First</th>
+                <th>Trainer Last</th>
+                <th>Total Prize</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in rows %}
+            <tr>
+                <td>{{ r.trainerFname }}</td>
+                <td>{{ r.trainerLname }}</td>
+                <td>{{ r.totalPrize }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3">No data.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p style="margin-top:2rem;"><a href="/">Back to Home</a></p>
+</body>
+</html>
