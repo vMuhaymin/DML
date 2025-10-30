@@ -1,0 +1,22 @@
+{% extends "dbManpulation/base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+{% if user %}
+<p style="color:#555;">Signed in as <strong>{{ user }}</strong></p>
+{% endif %}
+<p>Manage races, trainers, horses, and owners.</p>
+
+<div>
+    <a class="button" href="/admin-panel/add-race/">➕ Add Race & Results</a>
+    <a class="button" href="/admin-panel/delete-owner/">🗑 Delete Owner</a>
+    <a class="button" href="/admin-panel/move-horse/">🐎 Move Horse</a>
+    <a class="button" href="/admin-panel/approve-trainer/">✅ Approve Trainer</a>
+</div>
+
+<p style="margin-top:2rem;">
+    <a class="button" href="/">← Back to Home</a>
+</p>
+{% endblock %}

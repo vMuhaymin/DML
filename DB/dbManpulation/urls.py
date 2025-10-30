@@ -2,6 +2,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+
+    # Home  dashboards
+    path("", views.home_view, name="home"),
+    path("admin-panel/", views.admin_dashboard_view, name="admin_dashboard"),
+    path("guest/", views.guest_dashboard_view, name="guest_dashboard"),
+
     # Admin features
     path("admin-panel/add-race/", views.add_race_view, name="add_race"),
     path("admin-panel/delete-owner/", views.delete_owner_view, name="delete_owner"),

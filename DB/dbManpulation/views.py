@@ -1,7 +1,77 @@
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
-from django.db import connection
-from django.shortcuts import render
+from django.db import connection, transaction
+from django.shortcuts import render, redirect
+from datetime import date
+
+
+@require_http_methods(["GET", "POST"])
+def home_view(request):
+    """
+    Simple home page:
+    - If POST with admin credentials, log them in as admin and redirect.
+    - Otherwise render the login + guest button.
+    - Guest browsing does NOT require credentials; they just click "Browse as Guest".
+    """
+    message = None
+    error = False
+
+    if request.method == "POST":
+        username = request.POST.get("username", "").strip()
+        password = request.POST.get("password", "").strip()
+
+        # Hardcoded admin credentials
+        ADMIN_USER = "admin"
+        ADMIN_PASS = "123"
+
+        if username == ADMIN_USER and password == ADMIN_PASS:
+            request.session["role"] = "admin"
+            request.session["username"] = username
+            return redirect("admin_dashboard")
+        else:
+            message = "Invalid admin username or password."
+            error = True
+
+    return render(
+        request,
+        "dbManpulation/home.html",
+        {
+            "year": date.today().year,
+            "message": message,
+            "error": error,
+        },
+    )
+
+def admin_dashboard_view(request):
+    # if request.session.get("role") != "admin": return redirect("home")
+    if request.session.get("role") != "admin":
+        return redirect("home")
+
+    return render(
+        request,
+        "dbManpulation/admin_dashboard.html",
+        {"year": date.today().year, "user": request.session.get("username")}
+    )
+
+def guest_dashboard_view(request):
+    # If already logged in as admin or guest, fine.
+    role = request.session.get("role")
+
+    if role not in ("guest", "admin"):
+        # First time visitor -> treat them as guest
+        request.session["role"] = "guest"
+        request.session["username"] = "guest"
+
+    return render(
+        request,
+        "dbManpulation/guest_dashboard.html",
+        {
+            "year": date.today().year,
+            "user": request.session.get("username"),
+        }
+    )
+
+
 
 
 # ----- Admin-required actions -----

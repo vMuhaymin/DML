@@ -44,3 +44,14 @@
 <body>
     <header>
         <h1>🐎 Horse Management System</h1>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        © {{ year|default:2025 }} Horse Management System
+    </footer>
+</body>
+</html>
