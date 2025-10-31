@@ -233,7 +233,18 @@ def approve_trainer_view(request):
             "dbManpulation/approve_trainer.html",
             {"message": f"Error: {e}", "error": True},
         )
+        
+# helpers.py (or at top of your views.py)
+from functools import wraps
+from django.shortcuts import redirect
 
+def require_admin(view_func):
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        if request.session.get("role") != "admin":
+            return redirect("home")
+        return view_func(request, *args, **kwargs)
+    return _wrapped
 
 
 # ----- Guest browsing / reporting -----

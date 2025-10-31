@@ -4,9 +4,11 @@
 
 {% block content %}
 <h2>Guest Dashboard</h2>
+
 {% if user %}
-<p style="color:#555;">Signed in as <strong>{{ user }}</strong></p>
+<p style="color:#555;">Signed in as <strong>Guest</strong></p>
 {% endif %}
+
 <p>Browse race, trainer, and horse information.</p>
 
 <div>
@@ -15,8 +17,4 @@
     <a class="button" href="/guest/trainer-winnings/">💰 Trainer Winnings</a>
     <a class="button" href="/guest/track-stats/">📊 Track Statistics</a>
 </div>
-
-<p style="margin-top:2rem;">
-    <a class="button" href="/">← Back to Home</a>
-</p>
 {% endblock %}

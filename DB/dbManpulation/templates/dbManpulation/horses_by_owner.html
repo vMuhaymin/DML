@@ -1,52 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Horses by Owner</title>
-    <style>
-        body { font-family:sans-serif; padding:2rem; max-width:900px; }
-        form { margin-bottom:1.5rem; }
-        label { font-weight:600; display:block; }
-        input { padding:0.5rem; width:250px; margin-top:0.4rem; }
-        button { padding:0.5rem 1rem; margin-left:0.5rem; }
-        table { border-collapse:collapse; width:100%; max-width:800px; }
-        th, td { border:1px solid #ccc; padding:0.5rem 0.75rem; text-align:left; }
-        th { background:#f3f3f3; }
-    </style>
-</head>
-<body>
-    <h1>Horses by Owner Last Name</h1>
+{% extends "dbManpulation/base.html" %}
 
-    <form method="get">
-        <label>Owner last name</label>
-        <input type="text" name="lname" value="{{ lname }}">
-        <button type="submit">Search</button>
-    </form>
+{% block title %}Horses by Owner{% endblock %}
 
-    {% if rows %}
-    <table>
-        <thead>
-            <tr>
-                <th>Horse Name</th>
-                <th>Age</th>
-                <th>Trainer First</th>
-                <th>Trainer Last</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for r in rows %}
-            <tr>
-                <td>{{ r.horseName }}</td>
-                <td>{{ r.age }}</td>
-                <td>{{ r.trainerFname }}</td>
-                <td>{{ r.trainerLname }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% elif lname %}
-        <p>No matches for last name "{{ lname }}".</p>
-    {% endif %}
+{% block content %}
+<h1>Horses by Owner Last Name</h1>
 
-    <p style="margin-top:2rem;"><a href="/">Back to Home</a></p>
-</body>
-</html>
+<form method="get" style="max-width:400px; margin:1rem auto; text-align:left;">
+    <label class="block-label">Owner last name</label>
+    <input type="text" name="lname" value="{{ lname }}" class="input-field" style="max-width:250px;">
+    <button type="submit" class="primary-btn" style="max-width:200px;">Search</button>
+</form>
+
+{% if rows %}
+<table>
+    <thead>
+        <tr>
+            <th>Horse Name</th>
+            <th>Age</th>
+            <th>Trainer First</th>
+            <th>Trainer Last</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in rows %}
+        <tr>
+            <td>{{ r.horseName }}</td>
+            <td>{{ r.age }}</td>
+            <td>{{ r.trainerFname }}</td>
+            <td>{{ r.trainerLname }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif lname %}
+    <p>No matches for last name "{{ lname }}".</p>
+{% endif %}
+{% endblock %}

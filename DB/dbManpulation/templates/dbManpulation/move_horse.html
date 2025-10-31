@@ -1,36 +1,26 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Move Horse</title>
-    <style>
-        body { font-family:sans-serif; padding:2rem; max-width:600px; }
-        label { display:block; font-weight:600; margin-top:1rem; }
-        input { width:100%; padding:0.5rem; margin-top:0.4rem; }
-        button { margin-top:1rem; padding:0.6rem 1rem; cursor:pointer; }
-        .msg { margin-top:1rem; padding:.75rem; border:1px solid #999; background:#f6f6f6; }
-        .error { background:#ffe8e8; border-color:#c88; }
-    </style>
-</head>
-<body>
-    <h1>Move Horse to a Different Stable</h1>
+{% extends "dbManpulation/base.html" %}
 
-    {% if message %}
-    <div class="msg{% if error %} error{% endif %}">
-        {{ message }}
-    </div>
-    {% endif %}
+{% block title %}Move Horse{% endblock %}
 
-    <form method="post">
-        {% csrf_token %}
-        <label>Horse ID</label>
-        <input type="text" name="horseId" required>
+{% block content %}
+<h1>Move Horse to a Different Stable</h1>
 
-        <label>New Stable ID</label>
-        <input type="text" name="newStableId" required>
+{% if message %}
+<div class="msg"
+     style="border:1px solid {% if error %}#c88{% else %}#8c8{% endif %};
+            background:{% if error %}#ffe8e8{% else %}#e8ffe8{% endif %}; max-width:400px;">
+    {{ message }}
+</div>
+{% endif %}
 
-        <button type="submit">Move Horse</button>
-    </form>
+<form method="post" style="text-align:left; max-width:400px; margin:1rem auto;">
+    {% csrf_token %}
+    <label class="block-label">Horse ID</label>
+    <input type="text" name="horseId" class="input-field" required>
 
-    <p style="margin-top:2rem;"><a href="/">Back to Home</a></p>
-</body>
-</html>
+    <label class="block-label">New Stable ID</label>
+    <input type="text" name="newStableId" class="input-field" required>
+
+    <button type="submit" class="primary-btn" style="max-width:200px;">Move Horse</button>
+</form>
+{% endblock %}

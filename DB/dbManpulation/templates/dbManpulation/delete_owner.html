@@ -1,34 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Delete Owner</title>
-    <style>
-        body { font-family: sans-serif; padding: 2rem; max-width: 600px; }
-        label { display: block; font-weight: 600; margin-top: 1rem; }
-        input { width: 100%; padding: 0.5rem; margin-top: 0.4rem; }
-        button { margin-top: 1rem; padding: 0.6rem 1rem; cursor: pointer; }
-        .msg { margin-top: 1rem; padding: .75rem; border:1px solid #999; background:#f6f6f6; }
-        .error { background:#ffe8e8; border-color:#c88; }
-    </style>
-</head>
-<body>
-    <h1>Delete Owner and Related Info</h1>
+{% extends "dbManpulation/base.html" %}
 
-    <p>Enter an Owner ID. This will remove the owner and all their ownership records.</p>
+{% block title %}Delete Owner{% endblock %}
 
-    {% if message %}
-        <div class="msg{% if error %} error{% endif %}">
-            {{ message }}
-        </div>
-    {% endif %}
+{% block content %}
+<h1>Delete Owner and Related Info</h1>
 
-    <form method="post">
-        {% csrf_token %}
-        <label>Owner ID to delete</label>
-        <input type="text" name="ownerId" required>
-        <button type="submit">Delete Owner</button>
-    </form>
+<p>Enter an Owner ID. This will remove the owner and all their ownership records.</p>
 
-    <p style="margin-top:2rem;"><a href="/">Back to Home</a></p>
-</body>
-</html>
+{% if message %}
+<div class="msg"
+     style="border:1px solid {% if error %}#c88{% else %}#8c8{% endif %};
+            background:{% if error %}#ffe8e8{% else %}#e8ffe8{% endif %}; max-width:400px;">
+    {{ message }}
+</div>
+{% endif %}
+
+<form method="post" style="text-align:left; max-width:400px; margin:1rem auto;">
+    {% csrf_token %}
+    <label class="block-label">Owner ID to delete</label>
+    <input type="text" name="ownerId" class="input-field" required>
+
+    <button type="submit" class="primary-btn" style="max-width:200px;">Delete Owner</button>
+</form>
+{% endblock %}
