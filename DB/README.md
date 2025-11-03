@@ -40,66 +40,69 @@ USE horse_management;
 ------------------------------------------------------
 🧩 COPY THIS AND PASTE IN THE WORKBENCH 🧩 
 ------------------------------------------------------
-
+-- create archive table once
 CREATE TABLE IF NOT EXISTS old_info (
-    horseId VARCHAR(15) PRIMARY KEY,
-    horseName VARCHAR(50),
-    age INT,
-    gender VARCHAR(10),
-    registration VARCHAR(50),
-    stableId VARCHAR(15)
+  horseId      VARCHAR(15) PRIMARY KEY,
+  horseName    VARCHAR(50),
+  age          INT,
+  gender       VARCHAR(10),
+  registration VARCHAR(50),
+  stableId     VARCHAR(15)
 );
 
-
 DELIMITER $$
+
+DROP PROCEDURE IF EXISTS delete_owner_and_related $$
 CREATE PROCEDURE delete_owner_and_related(IN p_ownerId VARCHAR(15))
 BEGIN
-DECLARE done INT DEFAULT 0;
-DECLARE v_horseId VARCHAR(15);
+    DECLARE done INT DEFAULT 0;
+    DECLARE v_horseId VARCHAR(15);
+    DECLARE remaining INT DEFAULT 0;
 
+    -- cursor over DISTINCT horses owned by this owner
+    DECLARE horse_cursor CURSOR FOR
+        SELECT DISTINCT horseId
+        FROM owns
+        WHERE ownerId = p_ownerId;
 
--- cursor to collect all horses owned by this owner
-DECLARE horse_cursor CURSOR FOR
-    SELECT horseId
-    FROM owns
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+    OPEN horse_cursor;
+
+    read_loop: LOOP
+        FETCH horse_cursor INTO v_horseId;
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+        -- 1) remove THIS owner's link to this horse
+        DELETE FROM owns
+        WHERE ownerId = p_ownerId
+          AND horseId = v_horseId;
+
+        -- 2) check if anyone else still owns this horse
+        SELECT COUNT(*) INTO remaining
+        FROM owns
+        WHERE horseId = v_horseId;
+
+        -- 3) only if NO owners remain, delete race results and the horse
+        IF remaining = 0 THEN
+            DELETE FROM raceresults
+            WHERE horseId = v_horseId;
+
+            -- this will fire the BEFORE DELETE trigger to archive into old_info
+            DELETE FROM horse
+            WHERE horseId = v_horseId;
+        END IF;
+    END LOOP;
+
+    CLOSE horse_cursor;
+
+    -- Final cleanup: delete the owner record itself
+    DELETE FROM owner
     WHERE ownerId = p_ownerId;
+END $$
 
-DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
-
--- open the cursor
-OPEN horse_cursor;
-
-read_loop: LOOP
-    FETCH horse_cursor INTO v_horseId;
-    IF done = 1 THEN
-        LEAVE read_loop;
-    END IF;
-
-    -- 1. delete raceresults rows for this horse
-    DELETE FROM raceresults
-    WHERE horseId = v_horseId;
-
-    -- 2. delete ownership rows for this horse (from all owners)
-    DELETE FROM owns
-    WHERE horseId = v_horseId;
-
-    -- 3. delete the horse itself
-    -- this will also fire the trigger backup_horse_before_delete
-    DELETE FROM horse
-    WHERE horseId = v_horseId;
-END LOOP;
-
-CLOSE horse_cursor;
-
--- now remove the owner's own rows in owns (should already be gone, but safe)
-DELETE FROM owns
-WHERE ownerId = p_ownerId;
-
--- finally, delete the owner
-DELETE FROM owner
-WHERE ownerId = p_ownerId;
-
-END$$
 DELIMITER ;
 
 
