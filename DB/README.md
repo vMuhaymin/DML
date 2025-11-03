@@ -23,6 +23,46 @@ Open a terminal and run:
 pip install django
 pip install mysqlclient
 
+
+
+DML
+└─ DB                         ← cd here to run the server
+   ├─ manage.py               ← Django entry point
+   ├─ DB/                     ← Django project (settings, urls, wsgi)
+   │  ├─ __init__.py
+   │  ├─ settings.py          ← update DATABASES here
+   │  ├─ urls.py
+   │  └─ wsgi.py
+   └─ dbManpulation/          ← your app
+      ├─ __init__.py
+      ├─ admin.py
+      ├─ apps.py
+      ├─ models.py
+      ├─ urls.py
+      ├─ views.py
+      ├─ migrations/
+      └─ templates/
+         └─ dbManpulation/
+            ├─ base.html
+            ├─ home.html
+            ├─ admin_dashboard.html
+            ├─ guest_dashboard.html
+            ├─ add_race.html
+            ├─ delete_owner.html
+            ├─ move_horse.html
+            ├─ approve_trainer.html
+            ├─ horses_by_owner.html
+            ├─ winning_trainers.html
+            ├─ trainer_winnings.html
+            └─ track_stats.html
+----------------------------------------------------------------------------
+
+If you cloned from GitHub: cd DML/DB
+Then run:
+
+python manage.py runserver
+
+
 ----------------------------------------------------------------------------
 
 2️⃣ Set Up MySQL
